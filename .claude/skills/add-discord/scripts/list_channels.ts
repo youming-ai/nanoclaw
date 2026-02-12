@@ -1,5 +1,5 @@
 import { getReadyDiscordClient } from '../lib/discord.js';
-import type { SkillResult } from '../lib/types.js';
+import { formatDiscordError, type SkillResult } from '../lib/types.js';
 
 export interface ListChannelsInput {
   guildId: string;
@@ -30,7 +30,6 @@ export async function listDiscordChannels(
       data: channelList,
     };
   } catch (err) {
-    const errorMsg = err instanceof Error ? err.message : String(err);
-    return { success: false, message: `Failed to list channels: ${errorMsg}` };
+    return formatDiscordError(err, 'Failed to list channels');
   }
 }

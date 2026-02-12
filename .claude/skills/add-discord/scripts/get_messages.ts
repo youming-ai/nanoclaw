@@ -1,5 +1,5 @@
 import { fetchTextChannel, getReadyDiscordClient } from '../lib/discord.js';
-import type { SkillResult } from '../lib/types.js';
+import { formatDiscordError, type SkillResult } from '../lib/types.js';
 
 export interface GetMessagesInput {
   channelId: string;
@@ -40,7 +40,6 @@ export async function getDiscordMessages(
       data: messageList,
     };
   } catch (err) {
-    const errorMsg = err instanceof Error ? err.message : String(err);
-    return { success: false, message: `Failed to fetch messages: ${errorMsg}` };
+    return formatDiscordError(err, 'Failed to fetch messages');
   }
 }

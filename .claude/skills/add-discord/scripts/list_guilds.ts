@@ -1,5 +1,5 @@
 import { getReadyDiscordClient } from '../lib/discord.js';
-import type { SkillResult } from '../lib/types.js';
+import { formatDiscordError, type SkillResult } from '../lib/types.js';
 
 export async function listDiscordGuilds(): Promise<SkillResult> {
   const ready = await getReadyDiscordClient();
@@ -19,7 +19,6 @@ export async function listDiscordGuilds(): Promise<SkillResult> {
       data: guildList,
     };
   } catch (err) {
-    const errorMsg = err instanceof Error ? err.message : String(err);
-    return { success: false, message: `Failed to list guilds: ${errorMsg}` };
+    return formatDiscordError(err, 'Failed to list guilds');
   }
 }

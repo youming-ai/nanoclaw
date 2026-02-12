@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js';
 
 import { getReadyDiscordClient } from '../lib/discord.js';
-import type { SkillResult } from '../lib/types.js';
+import { formatDiscordError, type SkillResult } from '../lib/types.js';
 
 export interface GetChannelInfoInput {
   channelId: string;
@@ -36,10 +36,6 @@ export async function getDiscordChannelInfo(
 
     return { success: true, message: 'Channel info retrieved', data: info };
   } catch (err) {
-    const errorMsg = err instanceof Error ? err.message : String(err);
-    return {
-      success: false,
-      message: `Failed to get channel info: ${errorMsg}`,
-    };
+    return formatDiscordError(err, 'Failed to get channel info');
   }
 }

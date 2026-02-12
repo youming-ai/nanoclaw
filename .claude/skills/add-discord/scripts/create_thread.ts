@@ -1,7 +1,7 @@
 import type { ThreadAutoArchiveDuration, ThreadChannel } from 'discord.js';
 
 import { fetchTextChannel, getReadyDiscordClient } from '../lib/discord.js';
-import type { SkillResult } from '../lib/types.js';
+import { formatDiscordError, type SkillResult } from '../lib/types.js';
 
 export interface CreateThreadInput {
   channelId: string;
@@ -41,7 +41,6 @@ export async function createDiscordThread(
       data: { id: thread.id, name: thread.name },
     };
   } catch (err) {
-    const errorMsg = err instanceof Error ? err.message : String(err);
-    return { success: false, message: `Failed to create thread: ${errorMsg}` };
+    return formatDiscordError(err, 'Failed to create thread');
   }
 }
