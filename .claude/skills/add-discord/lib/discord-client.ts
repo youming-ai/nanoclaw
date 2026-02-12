@@ -5,6 +5,7 @@ import { logger } from './logger.js';
 let discordClient: Client | null = null;
 let clientReady = false;
 let reconnectAttempts = 0;
+let initPromise: Promise<boolean> | null = null;
 const MAX_RECONNECT_ATTEMPTS = 5;
 const RECONNECT_DELAY_MS = 5000;
 
@@ -75,6 +76,7 @@ async function attemptReconnect(): Promise<boolean> {
     }
     discordClient = null;
     clientReady = false;
+    initPromise = null;
 
     return await initDiscordClient();
   } catch (err) {
@@ -94,6 +96,17 @@ export async function initDiscordClient(): Promise<boolean> {
     return true;
   }
 
+  if (initPromise) {
+    return initPromise;
+  }
+
+  initPromise = doInit(token);
+  const result = await initPromise;
+  initPromise = null;
+  return result;
+}
+
+async function doInit(token: string): Promise<boolean> {
   if (discordClient) {
     discordClient.destroy();
   }
@@ -155,6 +168,7 @@ export function destroyDiscordClient(): void {
     discordClient = null;
     clientReady = false;
     reconnectAttempts = 0;
+    initPromise = null;
     logger.info('Discord client destroyed');
   }
 }
