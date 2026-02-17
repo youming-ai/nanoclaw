@@ -47,13 +47,18 @@ function writeResult(
 export async function handleDiscordIpc(
   data: Record<string, unknown>,
   sourceGroup: string,
-  _isMain: boolean,
+  isMain: boolean,
   dataDir: string,
 ): Promise<boolean> {
   const type = data.type as string;
 
   if (!type?.startsWith('discord_')) {
     return false;
+  }
+
+  if (!isMain) {
+    logger.warn({ sourceGroup, type }, 'Discord IPC blocked: not main group');
+    return true;
   }
 
   const requestId = data.requestId as string;
